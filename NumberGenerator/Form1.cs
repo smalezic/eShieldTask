@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -15,6 +16,10 @@ namespace NumberGenerator
     public partial class Form1 : Form
     {
         private char BACKSLASH = '\\';
+        StreamWriter sw = null;
+
+        private ObservableCollection<int> _numberList;
+        private Object _lockSync;
 
         public Form1()
         {
@@ -23,6 +28,30 @@ namespace NumberGenerator
             //var now = DateTime.Now;
             //CultureInfo ci = CultureInfo.InvariantCulture;
             //LblClock.Text = now.ToString("hh:mm:ss.fff", ci);
+            LblFileName.Text = @"D:\Temp\1.txt";
+            TxtAmount.Text = "100";
+
+            _numberList = new ObservableCollection<int>();
+            _numberList.CollectionChanged += NumberList_CollectionChanged;
+            _lockSync = new Object();
+        }
+
+        private void NumberList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if(e.NewItems != null)
+            {
+                foreach(var number in e.NewItems)
+                {
+                    lock (_lockSync)
+                    {
+                        StreamWriter sw1 = new StreamWriter(@"D:\Temp\10.txt");
+                        string line = (String)number;
+                        sw1.WriteLine(line);
+                        sw1.Flush();
+                        sw1.Close();
+                    }
+                }
+            }
         }
 
         private void BtnBrowse_Click(object sender, EventArgs e)
@@ -43,7 +72,13 @@ namespace NumberGenerator
             LblFileName.Text = path.GetFolderName() + TxtFileName.Text;
         }
 
-        private void BtnStart_Click(object sender, EventArgs e)
+        private async Task SaveNumber(StreamWriter sw, int number)
+        {
+            await sw.WriteLineAsync(number.ToString());
+            sw.Flush();
+        }
+
+        private async void BtnStart_Click(object sender, EventArgs e)
         {
             LblClock.Text = "00:00:00.000";
             var startTime = DateTime.Now;
@@ -58,25 +93,24 @@ namespace NumberGenerator
 
                 if (int.TryParse(TxtAmount.Text, out amount))
                 {
-                    StreamWriter sw = null;
 
                     Random rand = new Random(Guid.NewGuid().GetHashCode());
-                    int generatedNumber;
+                    int generatedNumber = 0;
 
                     ProgressBar.Value = 0;
                     ProgressBar.Maximum = amount;
 
-                    try
-                    {
+                    //try
+                    //{
                         sw = new StreamWriter(LblFileName.Text);
-
+                    
                         for (int i = 0; i < amount; i++)
                         {
-                            Task T = new Task(() =>
+                            Task T = Task.Factory.StartNew( () =>
                             {
                                 generatedNumber = rand.Next(2, 26);
-                                sw.WriteLineAsync(generatedNumber.ToString());
-                                sw.Flush();
+                                _numberList.Add(generatedNumber);
+                                //await SaveNumber(sw, generatedNumber);
                             });
 
                             Task T2 = T.ContinueWith((it) =>
@@ -84,24 +118,61 @@ namespace NumberGenerator
                                 var passedTime = (DateTime.Now - startTime);
                                 LblClock.Text = passedTime.ToString("hh':'mm':'ss'.'fff");
 
+                                RchOutput.AppendText(generatedNumber.ToString() + Environment.NewLine);
+
                                 ProgressBar.Value++;
                             },
                             TaskScheduler.FromCurrentSynchronizationContext());
 
-                            T.Start();
+                            //T.Start();
                         }
-                    }
-                    finally
-                    {
-                        if (sw != null)
-                        {
-                            sw.Close();
-                        }
-                    }
+
+                    //}
+                    //finally
+                    //{
+                    //if (sw != null)
+                    //{
+                    //    sw.Close();
+                    //}
+                    //}
                 }
                 else
                 {
                     MessageBox.Show("The amount of numbers is not in correct format!");
+                }
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(sw != null)
+            {
+                sw.Close();
+            }
+        }
+
+        private void BtnFileBrowse_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                String selectedFile = ofd.FileName;
+                LblFileNameForInspection.Text = selectedFile;
+
+                FileInspector fi = new FileInspector(selectedFile);
+                var fileAttribute = fi.GetFileAttributes();
+                if(fileAttribute != null && fileAttribute.Result)
+                {
+                    LblAttribute.Text = fileAttribute.Attribute.ToString();
+                    LblCreationTime.Text = fileAttribute.CreationTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
+                    LblAccessTime.Text = fileAttribute.LastAccessTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
+                    LblWriteTime.Text = fileAttribute.LastWriteTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
+                    LblFileSizeHigh.Text = fileAttribute.FileSizeHigh.ToString();
+                    LblFileSizeLow.Text = fileAttribute.FileSizeLow.ToString();
+                }
+                else
+                {
+                    MessageBox.Show("Reading file wasn't successful");
                 }
             }
         }

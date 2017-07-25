@@ -35,13 +35,31 @@
             this.label1 = new System.Windows.Forms.Label();
             this.BtnBrowse = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.ProgressBar = new System.Windows.Forms.ProgressBar();
-            this.BtnStart = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.TxtAmount = new System.Windows.Forms.TextBox();
             this.LblClock = new System.Windows.Forms.Label();
+            this.TxtAmount = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.BtnStart = new System.Windows.Forms.Button();
+            this.ProgressBar = new System.Windows.Forms.ProgressBar();
+            this.RchOutput = new System.Windows.Forms.RichTextBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.BtnFileBrowse = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.LblFileNameForInspection = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.LblAttribute = new System.Windows.Forms.Label();
+            this.LblCreationTime = new System.Windows.Forms.Label();
+            this.LblAccessTime = new System.Windows.Forms.Label();
+            this.LblWriteTime = new System.Windows.Forms.Label();
+            this.LblFileSizeHigh = new System.Windows.Forms.Label();
+            this.LblFileSizeLow = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -53,7 +71,7 @@
             this.panel1.Controls.Add(this.BtnBrowse);
             this.panel1.Location = new System.Drawing.Point(13, 13);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(662, 100);
+            this.panel1.Size = new System.Drawing.Size(404, 100);
             this.panel1.TabIndex = 0;
             // 
             // LblFileName
@@ -102,6 +120,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.RchOutput);
             this.panel2.Controls.Add(this.LblClock);
             this.panel2.Controls.Add(this.TxtAmount);
             this.panel2.Controls.Add(this.label3);
@@ -109,41 +128,8 @@
             this.panel2.Controls.Add(this.ProgressBar);
             this.panel2.Location = new System.Drawing.Point(13, 120);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(662, 232);
+            this.panel2.Size = new System.Drawing.Size(404, 418);
             this.panel2.TabIndex = 1;
-            // 
-            // ProgressBar
-            // 
-            this.ProgressBar.Location = new System.Drawing.Point(33, 185);
-            this.ProgressBar.Name = "ProgressBar";
-            this.ProgressBar.Size = new System.Drawing.Size(319, 23);
-            this.ProgressBar.TabIndex = 0;
-            // 
-            // BtnStart
-            // 
-            this.BtnStart.Location = new System.Drawing.Point(318, 4);
-            this.BtnStart.Name = "BtnStart";
-            this.BtnStart.Size = new System.Drawing.Size(75, 23);
-            this.BtnStart.TabIndex = 1;
-            this.BtnStart.Text = "&Start";
-            this.BtnStart.UseVisualStyleBackColor = true;
-            this.BtnStart.Click += new System.EventHandler(this.BtnStart_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(16, 13);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(46, 13);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Amount:";
-            // 
-            // TxtAmount
-            // 
-            this.TxtAmount.Location = new System.Drawing.Point(74, 6);
-            this.TxtAmount.Name = "TxtAmount";
-            this.TxtAmount.Size = new System.Drawing.Size(100, 20);
-            this.TxtAmount.TabIndex = 3;
             // 
             // LblClock
             // 
@@ -157,19 +143,229 @@
             this.LblClock.TabIndex = 4;
             this.LblClock.Text = "00:00:00.000";
             // 
+            // TxtAmount
+            // 
+            this.TxtAmount.Location = new System.Drawing.Point(74, 6);
+            this.TxtAmount.Name = "TxtAmount";
+            this.TxtAmount.Size = new System.Drawing.Size(100, 20);
+            this.TxtAmount.TabIndex = 3;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(16, 13);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(46, 13);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Amount:";
+            // 
+            // BtnStart
+            // 
+            this.BtnStart.Location = new System.Drawing.Point(318, 4);
+            this.BtnStart.Name = "BtnStart";
+            this.BtnStart.Size = new System.Drawing.Size(75, 23);
+            this.BtnStart.TabIndex = 1;
+            this.BtnStart.Text = "&Start";
+            this.BtnStart.UseVisualStyleBackColor = true;
+            this.BtnStart.Click += new System.EventHandler(this.BtnStart_Click);
+            // 
+            // ProgressBar
+            // 
+            this.ProgressBar.Location = new System.Drawing.Point(30, 54);
+            this.ProgressBar.Name = "ProgressBar";
+            this.ProgressBar.Size = new System.Drawing.Size(319, 23);
+            this.ProgressBar.TabIndex = 0;
+            // 
+            // RchOutput
+            // 
+            this.RchOutput.Location = new System.Drawing.Point(30, 84);
+            this.RchOutput.Name = "RchOutput";
+            this.RchOutput.Size = new System.Drawing.Size(100, 331);
+            this.RchOutput.TabIndex = 5;
+            this.RchOutput.Text = "";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.LblFileSizeLow);
+            this.panel3.Controls.Add(this.LblFileSizeHigh);
+            this.panel3.Controls.Add(this.LblWriteTime);
+            this.panel3.Controls.Add(this.LblAccessTime);
+            this.panel3.Controls.Add(this.LblCreationTime);
+            this.panel3.Controls.Add(this.LblAttribute);
+            this.panel3.Controls.Add(this.label10);
+            this.panel3.Controls.Add(this.label9);
+            this.panel3.Controls.Add(this.label8);
+            this.panel3.Controls.Add(this.label7);
+            this.panel3.Controls.Add(this.label6);
+            this.panel3.Controls.Add(this.label5);
+            this.panel3.Controls.Add(this.LblFileNameForInspection);
+            this.panel3.Controls.Add(this.label4);
+            this.panel3.Controls.Add(this.BtnFileBrowse);
+            this.panel3.Location = new System.Drawing.Point(429, 13);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(414, 524);
+            this.panel3.TabIndex = 2;
+            // 
+            // BtnFileBrowse
+            // 
+            this.BtnFileBrowse.Location = new System.Drawing.Point(312, 7);
+            this.BtnFileBrowse.Name = "BtnFileBrowse";
+            this.BtnFileBrowse.Size = new System.Drawing.Size(75, 23);
+            this.BtnFileBrowse.TabIndex = 0;
+            this.BtnFileBrowse.Text = "&Browse";
+            this.BtnFileBrowse.UseVisualStyleBackColor = true;
+            this.BtnFileBrowse.Click += new System.EventHandler(this.BtnFileBrowse_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(4, 12);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(58, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "File name: ";
+            // 
+            // LblFileNameForInspection
+            // 
+            this.LblFileNameForInspection.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.LblFileNameForInspection.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LblFileNameForInspection.Location = new System.Drawing.Point(68, 8);
+            this.LblFileNameForInspection.Name = "LblFileNameForInspection";
+            this.LblFileNameForInspection.Size = new System.Drawing.Size(238, 20);
+            this.LblFileNameForInspection.TabIndex = 2;
+            this.LblFileNameForInspection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(71, 48);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(49, 13);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "Attribute:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(49, 75);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(71, 13);
+            this.label6.TabIndex = 4;
+            this.label6.Text = "Creation time:";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(31, 102);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(89, 13);
+            this.label7.TabIndex = 5;
+            this.label7.Text = "Last access time:";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(43, 130);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(77, 13);
+            this.label8.TabIndex = 6;
+            this.label8.Text = "Last write time:";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(46, 157);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(74, 13);
+            this.label9.TabIndex = 7;
+            this.label9.Text = "File seze high:";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(54, 185);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(66, 13);
+            this.label10.TabIndex = 8;
+            this.label10.Text = "File size low:";
+            // 
+            // LblAttribute
+            // 
+            this.LblAttribute.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.LblAttribute.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LblAttribute.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.LblAttribute.Location = new System.Drawing.Point(126, 47);
+            this.LblAttribute.Name = "LblAttribute";
+            this.LblAttribute.Size = new System.Drawing.Size(180, 20);
+            this.LblAttribute.TabIndex = 9;
+            // 
+            // LblCreationTime
+            // 
+            this.LblCreationTime.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.LblCreationTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LblCreationTime.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.LblCreationTime.Location = new System.Drawing.Point(126, 74);
+            this.LblCreationTime.Name = "LblCreationTime";
+            this.LblCreationTime.Size = new System.Drawing.Size(180, 20);
+            this.LblCreationTime.TabIndex = 10;
+            // 
+            // LblAccessTime
+            // 
+            this.LblAccessTime.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.LblAccessTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LblAccessTime.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.LblAccessTime.Location = new System.Drawing.Point(126, 101);
+            this.LblAccessTime.Name = "LblAccessTime";
+            this.LblAccessTime.Size = new System.Drawing.Size(180, 20);
+            this.LblAccessTime.TabIndex = 11;
+            // 
+            // LblWriteTime
+            // 
+            this.LblWriteTime.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.LblWriteTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LblWriteTime.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.LblWriteTime.Location = new System.Drawing.Point(126, 129);
+            this.LblWriteTime.Name = "LblWriteTime";
+            this.LblWriteTime.Size = new System.Drawing.Size(180, 20);
+            this.LblWriteTime.TabIndex = 12;
+            // 
+            // LblFileSizeHigh
+            // 
+            this.LblFileSizeHigh.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.LblFileSizeHigh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LblFileSizeHigh.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.LblFileSizeHigh.Location = new System.Drawing.Point(126, 156);
+            this.LblFileSizeHigh.Name = "LblFileSizeHigh";
+            this.LblFileSizeHigh.Size = new System.Drawing.Size(180, 20);
+            this.LblFileSizeHigh.TabIndex = 13;
+            // 
+            // LblFileSizeLow
+            // 
+            this.LblFileSizeLow.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.LblFileSizeLow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LblFileSizeLow.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.LblFileSizeLow.Location = new System.Drawing.Point(126, 184);
+            this.LblFileSizeLow.Name = "LblFileSizeLow";
+            this.LblFileSizeLow.Size = new System.Drawing.Size(180, 20);
+            this.LblFileSizeLow.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(888, 671);
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -188,6 +384,23 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button BtnStart;
         private System.Windows.Forms.ProgressBar ProgressBar;
+        private System.Windows.Forms.RichTextBox RchOutput;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button BtnFileBrowse;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label LblFileNameForInspection;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label LblFileSizeLow;
+        private System.Windows.Forms.Label LblFileSizeHigh;
+        private System.Windows.Forms.Label LblWriteTime;
+        private System.Windows.Forms.Label LblAccessTime;
+        private System.Windows.Forms.Label LblCreationTime;
+        private System.Windows.Forms.Label LblAttribute;
     }
 }
 
