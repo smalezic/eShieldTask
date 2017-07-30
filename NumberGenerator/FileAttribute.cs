@@ -9,6 +9,8 @@ namespace NumberGenerator
 {
     public class FileAttribute
     {
+        #region Fields & Properties
+
         private readonly FileAttributes _attribute;
         public FileAttributes Attribute
         {
@@ -51,6 +53,10 @@ namespace NumberGenerator
             get { return _result; }
         }
 
+        #endregion Fields & Properties
+
+        #region Constructor
+
         public FileAttribute(
             bool result,
             FileAttributes attribute,
@@ -68,5 +74,7 @@ namespace NumberGenerator
             this._fileSizeHigh = fileSizeHigh;
             this._fileSizeLow = fileSizeLow;
         }
+
+        #endregion Constructor
     }
 }

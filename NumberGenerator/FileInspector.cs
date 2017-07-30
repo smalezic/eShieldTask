@@ -57,7 +57,7 @@ namespace NumberGenerator
             }
             catch
             {
-                
+                throw;
             }
 
             return retVal;

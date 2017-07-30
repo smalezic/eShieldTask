@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,44 +16,23 @@ namespace NumberGenerator
 {
     public partial class Form1 : Form
     {
-        private char BACKSLASH = '\\';
-        StreamWriter sw = null;
+        #region Fields
 
-        private ObservableCollection<int> _numberList;
-        private Object _lockSync;
+        private char BACKSLASH = '\\';
+        CancellationTokenSource _cts;
+
+        #endregion Fields
+
+        #region Constructor
 
         public Form1()
         {
             InitializeComponent();
-
-            //var now = DateTime.Now;
-            //CultureInfo ci = CultureInfo.InvariantCulture;
-            //LblClock.Text = now.ToString("hh:mm:ss.fff", ci);
-            LblFileName.Text = @"D:\Temp\1.txt";
-            TxtAmount.Text = "100";
-
-            _numberList = new ObservableCollection<int>();
-            _numberList.CollectionChanged += NumberList_CollectionChanged;
-            _lockSync = new Object();
         }
 
-        private void NumberList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if(e.NewItems != null)
-            {
-                foreach(var number in e.NewItems)
-                {
-                    lock (_lockSync)
-                    {
-                        StreamWriter sw1 = new StreamWriter(@"D:\Temp\10.txt");
-                        string line = (String)number;
-                        sw1.WriteLine(line);
-                        sw1.Flush();
-                        sw1.Close();
-                    }
-                }
-            }
-        }
+        #endregion Constructor
+
+        #region Event Handlers
 
         private void BtnBrowse_Click(object sender, EventArgs e)
         {
@@ -69,15 +49,9 @@ namespace NumberGenerator
         private void TxtFileName_KeyUp(object sender, KeyEventArgs e)
         {
             PathStructure path = new PathStructure(LblFileName.Text);
-            LblFileName.Text = path.GetFolderName() + TxtFileName.Text;
+            LblFileName.Text = path.GetFolderName() + TxtFileName.Text.Trim();
         }
-
-        private async Task SaveNumber(StreamWriter sw, int number)
-        {
-            await sw.WriteLineAsync(number.ToString());
-            sw.Flush();
-        }
-
+        
         private async void BtnStart_Click(object sender, EventArgs e)
         {
             LblClock.Text = "00:00:00.000";
@@ -91,90 +65,129 @@ namespace NumberGenerator
             {
                 int amount;
 
-                if (int.TryParse(TxtAmount.Text, out amount))
+                if (int.TryParse(TxtAmount.Text.Trim(), out amount))
                 {
-
                     Random rand = new Random(Guid.NewGuid().GetHashCode());
-                    int generatedNumber = 0;
-
+                    
                     ProgressBar.Value = 0;
                     ProgressBar.Maximum = amount;
 
-                    //try
-                    //{
-                        sw = new StreamWriter(LblFileName.Text);
-                    
-                        for (int i = 0; i < amount; i++)
+                    _cts = new CancellationTokenSource();
+                    CancellationToken ct = _cts.Token;
+
+                    BtnStart.Enabled = false;
+                    BtnCancel.Enabled = true;
+
+                    for (int i = 0; i < amount; i++)
+                    {
+                        try
                         {
-                            Task T = Task.Factory.StartNew( () =>
+                            Task numberGenerator = await Task.Factory.StartNew(async () =>
                             {
-                                generatedNumber = rand.Next(2, 26);
-                                _numberList.Add(generatedNumber);
-                                //await SaveNumber(sw, generatedNumber);
-                            });
+                                await SaveToFileAsync(LblFileName.Text, rand.Next(2, 26).ToString());
+                            }, ct);
 
-                            Task T2 = T.ContinueWith((it) =>
+                            Task userInterfaceUpdater = numberGenerator.ContinueWith((it) =>
                             {
-                                var passedTime = (DateTime.Now - startTime);
-                                LblClock.Text = passedTime.ToString("hh':'mm':'ss'.'fff");
-
-                                RchOutput.AppendText(generatedNumber.ToString() + Environment.NewLine);
-
+                                LblClock.Text = (DateTime.Now - startTime).ToString("hh':'mm':'ss'.'fff");
                                 ProgressBar.Value++;
-                            },
-                            TaskScheduler.FromCurrentSynchronizationContext());
-
-                            //T.Start();
+                            }, TaskScheduler.FromCurrentSynchronizationContext());
                         }
+                        catch (AggregateException exc)
+                        {
+                            foreach (var flattenExp in exc.Flatten().InnerExceptions)
+                            {
+                                Console.WriteLine("Error - {0}", flattenExp.Message);
+                            }
+                        }
+                        catch(OperationCanceledException exc)
+                        {
+                            if (exc.CancellationToken.IsCancellationRequested)
+                            {
+                                MessageBox.Show("The operation is canceled");
+                                break;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Unknown error!");
+                            }
+                        }
+                        catch(Exception exc)
+                        {
+                            MessageBox.Show("Unknown error - {0}", exc.Message);
+                        }
+                    }
 
-                    //}
-                    //finally
-                    //{
-                    //if (sw != null)
-                    //{
-                    //    sw.Close();
-                    //}
-                    //}
+                    if (_cts.IsCancellationRequested == false)
+                    {
+                        MessageBox.Show("Done!");
+                    }
+
+                    BtnStart.Enabled = true;
+                    BtnCancel.Enabled = false;
                 }
                 else
                 {
-                    MessageBox.Show("The amount of numbers is not in correct format!");
+                    MessageBox.Show("The amount is not in correct format!");
                 }
             }
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void BtnCancel_Click(object sender, EventArgs e)
         {
-            if(sw != null)
-            {
-                sw.Close();
-            }
+            _cts.Cancel();
+
+            BtnStart.Enabled = true;
+            BtnCancel.Enabled = false;
         }
 
         private void BtnFileBrowse_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
+
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 String selectedFile = ofd.FileName;
                 LblFileNameForInspection.Text = selectedFile;
 
-                FileInspector fi = new FileInspector(selectedFile);
-                var fileAttribute = fi.GetFileAttributes();
-                if(fileAttribute != null && fileAttribute.Result)
+                try
                 {
-                    LblAttribute.Text = fileAttribute.Attribute.ToString();
-                    LblCreationTime.Text = fileAttribute.CreationTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
-                    LblAccessTime.Text = fileAttribute.LastAccessTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
-                    LblWriteTime.Text = fileAttribute.LastWriteTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
-                    LblFileSizeHigh.Text = fileAttribute.FileSizeHigh.ToString();
-                    LblFileSizeLow.Text = fileAttribute.FileSizeLow.ToString();
+                    FileInspector fi = new FileInspector(selectedFile);
+                    var fileAttribute = fi.GetFileAttributes();
+
+                    if (fileAttribute != null && fileAttribute.Result)
+                    {
+                        LblAttribute.Text = fileAttribute.Attribute.ToString();
+                        LblCreationTime.Text = fileAttribute.CreationTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
+                        LblAccessTime.Text = fileAttribute.LastAccessTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
+                        LblWriteTime.Text = fileAttribute.LastWriteTime.ToString("yyyy-MM-dd, HH:mm:ss.fff");
+                        LblFileSizeHigh.Text = fileAttribute.FileSizeHigh.ToString();
+                        LblFileSizeLow.Text = fileAttribute.FileSizeLow.ToString();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Reading the file wasn't successful");
+                    }
                 }
-                else
+                catch(Exception exc)
                 {
-                    MessageBox.Show("Reading file wasn't successful");
+                    MessageBox.Show("Error - {0}", exc.Message);
                 }
             }
         }
+
+        #endregion Event Handlers
+
+        #region IO Method
+
+        private async Task SaveToFileAsync(string path, string line)
+        {
+            using (var sw = File.AppendText(path))
+            {
+                await sw.WriteLineAsync(line);
+            }
+        }
+
+        #endregion IO Method
     }
 }

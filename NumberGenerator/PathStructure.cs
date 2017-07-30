@@ -8,14 +8,24 @@ namespace NumberGenerator
 {
     internal class PathStructure
     {
+        #region Fields
+
         private readonly String _path;
         private readonly int _lastIndexOfBackslash;
+
+        #endregion Fields
+
+        #region Constructor
 
         internal PathStructure(String path)
         {
             this._path = path;
             this._lastIndexOfBackslash = path.LastIndexOf('\\');
         }
+
+        #endregion Constructor
+
+        #region Public Methods
 
         public String GetFileName()
         {
@@ -69,5 +79,7 @@ namespace NumberGenerator
 
             return retVal;
         }
+
+        #endregion Public Methods
     }
 }
